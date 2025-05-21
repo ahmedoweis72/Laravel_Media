@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Platform;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class PostController extends Controller
 {
@@ -13,20 +15,36 @@ class PostController extends Controller
         return Post::with(['user', 'platforms'])->get();
     }
 
+  
+public function create()
+    {
+        $platforms = Platform::all();
+
+        return Inertia::render('Posts/Create', [
+            'platforms' => $platforms,
+        ]);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|string',
+            'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'image_url' => 'nullable|string',
-            'scheduled_time' => 'nullable|date',
-            'status' => 'required|in:draft,scheduled,published',
-            'user_id' => 'required|exists:users,id',
+            'status' => 'required|in:draft,published',
+            'platform_ids' => 'required|array',
+            'platform_ids.*' => 'exists:platforms,id',
         ]);
 
-        $post = Post::create($validated);
+        $post = Post::create([
+            'title' => $validated['title'],
+            'content' => $validated['content'],
+            'status' => $validated['status'],
+            'user_id' => auth()->id(),
+        ]);
 
-        return response()->json($post, 201);
+        $post->platforms()->attach($validated['platform_ids'], ['platform_status' => 'pending']);
+
+        return redirect()->route('newFeed')->with('success', 'Post created successfully.');
     }
 
     public function show(Post $post)

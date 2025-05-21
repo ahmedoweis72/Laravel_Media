@@ -25,10 +25,16 @@ export default function AuthenticatedLayout({ header, children }) {
 
                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
+                                    href={route('newFeed')}
+                                    active={route().current('newFeed')}
                                 >
-                                    Dashboard
+                                    New Feed
+                                </NavLink>
+                                <NavLink
+                                    href={route('posts.create')} 
+                                    // active={route().current('posts.create')}
+                                >
+                                    Create Post
                                 </NavLink>
                             </div>
                         </div>
@@ -129,12 +135,19 @@ export default function AuthenticatedLayout({ header, children }) {
                 >
                     <div className="space-y-1 pb-3 pt-2">
                         <ResponsiveNavLink
-                            href={route('dashboard')}
-                            active={route().current('dashboard')}
+                            href={route('newFeed')}
+                            active={route().current('newFeed')}
                         >
-                            Dashboard
+                            New Feed
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('posts.create')}
+                            active={route().current('posts.create')}
+                        >
+                            Create Post
                         </ResponsiveNavLink>
                     </div>
+                    
 
                     <div className="border-t border-gray-200 pb-1 pt-4">
                         <div className="px-4">
