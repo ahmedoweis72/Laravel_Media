@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Laravel_Media",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
