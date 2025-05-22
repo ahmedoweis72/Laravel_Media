@@ -18,8 +18,20 @@ import {
   CheckCircle,
   AlertCircle,
   Edit2,
-  Trash,
+  Trash2,
 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "../Components/ui/alert-dialog"; // Adjust if needed
+import { Button } from "../Components/ui/button"; // Ensure Button is imported correctly
 
 function getPlatformStatusIcon(status) {
   switch (status) {
@@ -40,13 +52,7 @@ export default function Posts({ posts }) {
   const [deletingId, setDeletingId] = useState(null);
 
   const handleDelete = (id) => {
-    if (!confirm("Are you sure you want to delete this post?")) return;
-
-    setDeletingId(id);
-
-    Inertia.delete(route("posts.destroy", id), {
-      onFinish: () => setDeletingId(null),
-    });
+    Inertia.delete(route("posts.destroy", id));
   };
 
   return (
@@ -64,7 +70,6 @@ export default function Posts({ posts }) {
         </Card>
       </div>
 
-      {/* Center: Main post feed */}
       <div className="col-span-1 md:col-span-1 space-y-4">
         {posts.map((post) => (
           <Card key={post.id} className="hover:shadow-md transition-shadow">
@@ -99,9 +104,7 @@ export default function Posts({ posts }) {
                 {post.scheduled_time && (
                   <div className="flex items-center gap-1">
                     <ClockIcon className="h-4 w-4" />
-                    <span>
-                      {new Date(post.scheduled_time).toLocaleString()}
-                    </span>
+                    <span>{new Date(post.scheduled_time).toLocaleString()}</span>
                   </div>
                 )}
               </div>
@@ -129,25 +132,40 @@ export default function Posts({ posts }) {
                   >
                     <Edit2 size={20} />
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => handleDelete(post.id)}
-                    disabled={deletingId === post.id}
-                    title="Delete Post"
-                    className={`text-red-600 hover:text-red-800 ${
-                      deletingId === post.id
-                        ? "opacity-50 cursor-not-allowed"
-                        : ""
-                    }`}
-                  >
-                    <Trash size={20} />
-                  </button>
+
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="destructive"
+                        onClick={() => setDeletingId(post.id)}
+                        className="bg-transparent"
+                      >
+                        <Trash2 className="w-4 h-4 mr-2 text-blue-700 " />
+                      </Button>
+                    </AlertDialogTrigger>
+
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This will permanently delete the post and cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => handleDelete(post.id)}>
+                          Yes, Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               )}
             </CardFooter>
           </Card>
         ))}
       </div>
+
       <div className="hidden md:block">
         <Card className="sticky top-6 bg-gray-50">
           <CardHeader>
