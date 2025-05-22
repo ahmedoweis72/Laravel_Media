@@ -5,6 +5,7 @@ use App\Http\Controllers\PlatformWebController;
 use App\Http\Controllers\PostWebController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Post;
+use App\Models\Platform;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -22,6 +23,19 @@ Route::middleware(['auth'])->get('/newFeed', function () {
         'posts' => Post::with(['user', 'platforms'])->get(),
     ]);
 })->name('newFeed');
+
+Route::middleware(['auth'])->get('/dashboard', function () {
+    return Inertia::render('Dashboard', [
+        'initialPosts' => Post::with(['user', 'platforms'])->get(),
+        'platforms' => Platform::all(),
+    ]);
+})->name('dashboard');
+
+Route::middleware(['auth'])->get('/settings', function () {
+    return Inertia::render('Settings', [
+        'initialPlatforms' => Platform::all(),
+    ]);
+})->name('settings');
 
 
 // List posts

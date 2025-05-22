@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Inertia } from "@inertiajs/inertia";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
@@ -30,6 +30,7 @@ import {
 import { Checkbox } from "@/Components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardHeader, CardTitle, CardContent } from "@/Components/ui/card";
+import { Calendar, Globe, CheckCircle, AlertCircle, Image as ImageIcon } from "lucide-react";
 
 const validationSchema = Yup.object({
     title: Yup.string()
@@ -50,6 +51,14 @@ const validationSchema = Yup.object({
     })
 });
 
+// Platform character limits for different social media platforms
+const PLATFORM_LIMITS = {
+    twitter: 280,
+    instagram: 2200,
+    linkedin: 3000,
+    facebook: 63206
+};
+
 export default function PostForm({ post = null, platforms }) {
     const [submitting, setSubmitting] = useState(false);
     const [showAddPlatform, setShowAddPlatform] = useState(false);
@@ -64,6 +73,41 @@ export default function PostForm({ post = null, platforms }) {
     const [platformToDelete, setPlatformToDelete] = useState(null);
     const { toast } = useToast();
     const [imagePreview, setImagePreview] = useState(post?.image_url || null);
+    const [contentLength, setContentLength] = useState(post?.content?.length || 0);
+    const [selectedPlatformTypes, setSelectedPlatformTypes] = useState([]);
+    const [dailyPostCount, setDailyPostCount] = useState(0);
+    const [reachedPostLimit, setReachedPostLimit] = useState(false);
+
+    // Check daily post limit (max 10 per day)
+    useEffect(() => {
+        // Fetch daily post count from API
+        fetch('/api/posts/filter/date/' + new Date().toISOString().split('T')[0])
+            .then(response => response.json())
+            .then(data => {
+                const count = data.length;
+                setDailyPostCount(count);
+                setReachedPostLimit(count >= 10);
+            })
+            .catch(error => {
+                console.error('Error fetching daily post count:', error);
+            });
+    }, []);
+
+    // Update selected platform types when platform_ids change
+    useEffect(() => {
+        if (platforms) {
+            const updateSelectedTypes = (platformIds) => {
+                const types = platforms
+                    .filter(p => platformIds.includes(p.id))
+                    .map(p => p.type?.toLowerCase());
+                setSelectedPlatformTypes(types);
+            };
+            
+            if (post?.platforms) {
+                updateSelectedTypes(post.platforms.map(p => p.id));
+            }
+        }
+    }, [platforms, post]);
 
     // Helper function to check if a post meets platform requirements
     const validateForPlatform = (content, imageUrl, platformType) => {
@@ -81,6 +125,16 @@ export default function PostForm({ post = null, platforms }) {
         }
     };
 
+    // Get the most restrictive character limit from selected platforms
+    const getCharacterLimit = (platformTypes) => {
+        if (!platformTypes || platformTypes.length === 0) return Infinity;
+        
+        return platformTypes.reduce((limit, type) => {
+            const platformLimit = PLATFORM_LIMITS[type?.toLowerCase()] || Infinity;
+            return Math.min(limit, platformLimit);
+        }, Infinity);
+    };
+
     const initialValues = {
         title: post?.title || "",
         content: post?.content || "",
@@ -91,6 +145,16 @@ export default function PostForm({ post = null, platforms }) {
     };
 
     const handleSubmit = (values, { setErrors }) => {
+        // Check daily post limit
+        if (values.status === 'scheduled' && dailyPostCount >= 10 && !post) {
+            toast({
+                title: "Daily Limit Reached",
+                description: "You can only schedule up to 10 posts per day.",
+                variant: "destructive",
+            });
+            return;
+        }
+        
         setSubmitting(true);
         
         const formData = new FormData();
@@ -233,6 +297,23 @@ export default function PostForm({ post = null, platforms }) {
         });
     };
 
+    function PlatformTypeIcon({ type }) {
+        const lowerType = type?.toLowerCase();
+        
+        switch(lowerType) {
+            case 'twitter':
+                return <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M21.543 7.104c.015.211.015.423.015.636 0 6.507-4.954 14.01-14.01 14.01v-.003A13.94 13.94 0 0 1 1 19.539a9.88 9.88 0 0 0 7.287-2.041 4.93 4.93 0 0 1-4.6-3.42 4.916 4.916 0 0 0 2.223-.084A4.926 4.926 0 0 1 1.999 9.17v-.062a4.887 4.887 0 0 0 2.235.616A4.928 4.928 0 0 1 2.46 3.44a13.979 13.979 0 0 0 10.15 5.147 4.929 4.929 0 0 1 8.391-4.491 9.868 9.868 0 0 0 3.128-1.196 4.941 4.941 0 0 1-2.165 2.724A9.828 9.828 0 0 0 24 4.89a10.019 10.019 0 0 1-2.457 2.549v-.001z"/></svg>;
+            case 'facebook':
+                return <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>;
+            case 'instagram':
+                return <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>;
+            case 'linkedin':
+                return <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>;
+            default:
+                return <Globe className="h-4 w-4" />;
+        }
+    }
+
     return (
         <AuthenticatedLayout>
             <div className="max-w-5xl mx-auto p-6 mt-6 bg-card rounded-lg shadow">
@@ -246,7 +327,7 @@ export default function PostForm({ post = null, platforms }) {
                     enableReinitialize
                     onSubmit={handleSubmit}
                 >
-                    {({ values, errors, touched, setFieldValue }) => (
+                    {({ values, errors, touched, setFieldValue, isValid }) => (
                         <Form noValidate className="space-y-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-6">
@@ -265,12 +346,11 @@ export default function PostForm({ post = null, platforms }) {
                                             type="text"
                                             disabled={submitting}
                                             autoFocus
-                                            className="bg-background text-foreground"
+                                            className={`${errors.title && touched.title ? 'border-red-500' : ''}`}
                                         />
-                                        <InputError
-                                            message={errors.title}
-                                            className="mt-1"
-                                        />
+                                        {errors.title && touched.title && (
+                                            <InputError message={errors.title} className="mt-1" />
+                                        )}
                                     </div>
 
                                     <div className="mb-5">
@@ -280,18 +360,39 @@ export default function PostForm({ post = null, platforms }) {
                                         >
                                             Content
                                         </label>
+                                        <div className="flex justify-between mb-1">
+                                            <span className={`text-sm ${
+                                                contentLength > getCharacterLimit(selectedPlatformTypes) 
+                                                    ? 'text-red-500' 
+                                                    : contentLength > getCharacterLimit(selectedPlatformTypes) * 0.9 
+                                                        ? 'text-amber-500' 
+                                                        : 'text-gray-500'
+                                            }`}>
+                                                {contentLength} / {getCharacterLimit(selectedPlatformTypes) === Infinity 
+                                                    ? '∞' 
+                                                    : getCharacterLimit(selectedPlatformTypes)}
+                                            </span>
+                                        </div>
                                         <Field
                                             as={Textarea}
                                             id="content"
                                             name="content"
                                             rows={5}
                                             disabled={submitting}
-                                            className="bg-background text-foreground"
+                                            className={`${errors.content && touched.content ? 'border-red-500' : ''}`}
+                                            onChange={(e) => {
+                                                setFieldValue('content', e.target.value);
+                                                setContentLength(e.target.value.length);
+                                            }}
                                         />
-                                        <InputError
-                                            message={errors.content}
-                                            className="mt-1"
-                                        />
+                                        {errors.content && touched.content && (
+                                            <InputError message={errors.content} className="mt-1" />
+                                        )}
+                                        {contentLength > getCharacterLimit(selectedPlatformTypes) && (
+                                            <p className="text-red-500 text-sm mt-1">
+                                                Content exceeds the character limit for selected platforms!
+                                            </p>
+                                        )}
                                     </div>
 
                                     <div className="mb-5">
@@ -301,41 +402,53 @@ export default function PostForm({ post = null, platforms }) {
                                         >
                                             Image Upload
                                         </label>
-                                        <Input
-                                            id="image_url"
-                                            name="image_url"
-                                            type="file"
-                                            onChange={(e) => {
-                                                const file = e.target.files[0];
-                                                if (file) {
-                                                    setFieldValue('image_url', file);
-                                                    setImagePreview(URL.createObjectURL(file));
-                                                }
-                                            }}
-                                            accept="image/*"
-                                            disabled={submitting}
-                                            className="bg-background text-foreground"
-                                        />
-                                        {imagePreview && (
-                                            <div className="mt-2">
-                                                <img 
-                                                    src={imagePreview} 
-                                                    alt="Preview" 
-                                                    className="w-32 h-32 object-cover rounded" 
-                                                />
-                                                <button 
+                                        <div className="flex items-center space-x-4">
+                                            <div 
+                                                className="border border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
+                                                onClick={() => document.getElementById('image_url').click()}
+                                                style={{ height: '120px', width: '120px' }}
+                                            >
+                                                {imagePreview ? (
+                                                    <img 
+                                                        src={typeof imagePreview === 'string' ? imagePreview : URL.createObjectURL(imagePreview)} 
+                                                        alt="Preview" 
+                                                        className="h-full w-full object-cover rounded-lg"
+                                                    />
+                                                ) : (
+                                                    <div className="text-center">
+                                                        <ImageIcon className="mx-auto h-10 w-10 text-gray-400" />
+                                                        <p className="mt-1 text-xs text-gray-500">Click to upload</p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <input
+                                                id="image_url"
+                                                name="image_url"
+                                                type="file"
+                                                accept="image/*"
+                                                className="hidden"
+                                                onChange={(e) => {
+                                                    const file = e.target.files[0];
+                                                    if (file) {
+                                                        setFieldValue('image_url', file);
+                                                        setImagePreview(file);
+                                                    }
+                                                }}
+                                            />
+                                            {imagePreview && (
+                                                <Button
                                                     type="button"
-                                                    className="text-sm text-red-500 mt-1 hover:text-red-700"
+                                                    variant="outline"
+                                                    size="sm"
                                                     onClick={() => {
-                                                        setImagePreview(null);
                                                         setFieldValue('image_url', '');
+                                                        setImagePreview(null);
                                                     }}
                                                 >
-                                                    Remove image
-                                                </button>
-                                            </div>
-                                        )}
-                                        <InputError message={errors.image_url} className="mt-1" />
+                                                    Remove
+                                                </Button>
+                                            )}
+                                        </div>
                                     </div>
 
                                     <div className="mb-5">
@@ -397,9 +510,16 @@ export default function PostForm({ post = null, platforms }) {
                                                 onChange={(e) => setFieldValue("scheduled_time", e.target.value)}
                                                 min={new Date().toISOString().slice(0, 16)}
                                                 disabled={submitting}
-                                                className="bg-background text-foreground"
+                                                className={`${errors.scheduled_time && touched.scheduled_time ? 'border-red-500' : ''}`}
                                             />
-                                            <InputError message={errors.scheduled_time} className="mt-1" />
+                                            {errors.scheduled_time && touched.scheduled_time && (
+                                                <InputError message={errors.scheduled_time} className="mt-1" />
+                                            )}
+                                            {reachedPostLimit && !post && (
+                                                <p className="text-red-500 text-sm mt-1">
+                                                    You've reached the daily limit of 10 scheduled posts.
+                                                </p>
+                                            )}
                                         </div>
                                     )}
 
@@ -780,7 +900,7 @@ export default function PostForm({ post = null, platforms }) {
                             <div className="pt-4">
                                 <Button
                                     type="submit"
-                                    disabled={submitting}
+                                    disabled={submitting || !isValid || (reachedPostLimit && values.status === 'scheduled' && !post)}
                                     className="w-full"
                                 >
                                     {submitting ? (

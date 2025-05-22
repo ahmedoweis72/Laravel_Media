@@ -9,7 +9,7 @@ class Platform extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'type'];
+    protected $fillable = ['name', 'type', 'is_active', 'api_key', 'api_secret', 'access_token'];
 
     public function posts()
     {

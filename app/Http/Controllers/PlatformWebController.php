@@ -25,6 +25,10 @@ class PlatformWebController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:platforms,name'],
             'type' => ['nullable', 'string', 'max:255'],
+            'is_active' => ['boolean'],
+            'api_key' => ['nullable', 'string'],
+            'api_secret' => ['nullable', 'string'],
+            'access_token' => ['nullable', 'string'],
         ]);
 
         Platform::create($validated);
@@ -51,6 +55,10 @@ class PlatformWebController extends Controller
                 Rule::unique('platforms')->ignore($platform->id),
             ],
             'type' => ['nullable', 'string', 'max:255'],
+            'is_active' => ['boolean'],
+            'api_key' => ['nullable', 'string'],
+            'api_secret' => ['nullable', 'string'],
+            'access_token' => ['nullable', 'string'],
         ]);
 
         $platform->update($validated);

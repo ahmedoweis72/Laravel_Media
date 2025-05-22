@@ -47,12 +47,24 @@ const user = auth?.user;
                                             New Feed
                                         </NavLink>
                                         <NavLink
+                                            href={route("dashboard")}
+                                            active={route().current("dashboard")}
+                                        >
+                                            Dashboard
+                                        </NavLink>
+                                        <NavLink
                                             href={route("posts.create")}
                                             active={route().current(
                                                 "posts.create"
                                             )}
                                         >
                                             Create Post
+                                        </NavLink>
+                                        <NavLink
+                                            href={route("settings")}
+                                            active={route().current("settings")}
+                                        >
+                                            Settings
                                         </NavLink>
                                     </div>
                                 )}
@@ -186,10 +198,22 @@ const user = auth?.user;
                                         New Feed
                                     </ResponsiveNavLink>
                                     <ResponsiveNavLink
+                                        href={route("dashboard")}
+                                        active={route().current("dashboard")}
+                                    >
+                                        Dashboard
+                                    </ResponsiveNavLink>
+                                    <ResponsiveNavLink
                                         href={route("posts.create")}
                                         active={route().current("posts.create")}
                                     >
                                         Create Post
+                                    </ResponsiveNavLink>
+                                    <ResponsiveNavLink
+                                        href={route("settings")}
+                                        active={route().current("settings")}
+                                    >
+                                        Settings
                                     </ResponsiveNavLink>
                                 </>
                             ) : (
