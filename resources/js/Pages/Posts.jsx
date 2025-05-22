@@ -58,11 +58,11 @@ export default function Posts({ posts }) {
   return (
     <div className="w-full p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
       <div className="hidden md:block">
-        <Card className="sticky top-6 bg-blue-50">
+        <Card className="sticky top-6 light:bg-blue-50">
           <CardHeader>
-            <CardTitle className="text-blue-700 text-sm">Laravel-Media</CardTitle>
+            <CardTitle className="light:text-blue-700 text-sm">Laravel-Media</CardTitle>
           </CardHeader>
-          <CardContent className="text-sm text-gray-600 space-y-2">
+          <CardContent className="text-sm light:text-gray-600 space-y-2">
             <p>👥 Friends Suggestions</p>
             <p>📅 Upcoming Events</p>
             <p>🎮 Games & Marketplace</p>
@@ -167,11 +167,11 @@ export default function Posts({ posts }) {
       </div>
 
       <div className="hidden md:block">
-        <Card className="sticky top-6 bg-gray-50">
+        <Card className="sticky top-6 light:bg-gray-50">
           <CardHeader>
-            <CardTitle className="text-gray-700 text-sm">Laravel-Media</CardTitle>
+            <CardTitle className="light:text-gray-700 text-sm">Laravel-Media</CardTitle>
           </CardHeader>
-          <CardContent className="text-sm text-gray-600 space-y-2">
+          <CardContent className="text-sm light:text-gray-600 space-y-2">
             <p>📢 Trending News</p>
             <p>💼 Job Opportunities</p>
             <p>💬 Networking Events</p>

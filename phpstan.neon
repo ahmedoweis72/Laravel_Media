@@ -1,0 +1,15 @@
+parameters:
+    level: 8
+    paths:
+        - app
+        - tests
+        - database
+        - routes
+    excludePaths:
+        - tests/coverage/*
+    checkMissingIterableValueType: true
+    checkGenericClassInNonGenericObjectType: true
+    reportUnmatchedIgnoredErrors: true
+    ignoreErrors:
+        - '#PHPDoc tag @var#'
+    editorUrl: 'vscode://file/%%file%%:%%line%%' 

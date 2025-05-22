@@ -42,22 +42,22 @@ Route::middleware(['auth'])->get('/settings', function () {
 Route::get('/posts', [PostWebController::class, 'index'])->name('posts.index');
 
 // Show create form
-Route::get('/posts/create', [PostWebController::class, 'create'])->middleware('auth')->name('posts.create');
+Route::middleware('auth:sanctum')->get('/posts/create', [PostWebController::class, 'create'])->middleware('auth')->name('posts.create');
 
 // Store new post
-Route::post('/posts', [PostWebController::class, 'store'])->middleware('auth')->name('posts.store');
+Route::middleware('auth:sanctum')->post('/posts', [PostWebController::class, 'store'])->middleware('auth')->name('posts.store');
 
 // Show single post
-Route::get('/posts/{post}', [PostWebController::class, 'show'])->name('posts.show');
+Route::middleware('auth:sanctum')->get('/posts/{post}', [PostWebController::class, 'show'])->name('posts.show');
 
 // Show edit form
-Route::get('/posts/{post}/edit', [PostWebController::class, 'edit'])->middleware('auth')->name('posts.edit');
+Route::middleware('auth:sanctum')->get('/posts/{post}/edit', [PostWebController::class, 'edit'])->middleware('auth')->name('posts.edit');
 
 // Update post
-Route::put('/posts/{post}', [PostWebController::class, 'update'])->middleware('auth')->name('posts.update');
+Route::middleware('auth:sanctum')->put('/posts/{post}', [PostWebController::class, 'update'])->middleware('auth')->name('posts.update');
 
 // Delete post
-Route::delete('/posts/{post}', [PostWebController::class, 'destroy'])->middleware('auth')->name('posts.destroy');
+Route::middleware('auth:sanctum')->delete('/posts/{post}', [PostWebController::class, 'destroy'])->middleware('auth')->name('posts.destroy');
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('platforms', PlatformWebController::class)->except(['show', 'create']);

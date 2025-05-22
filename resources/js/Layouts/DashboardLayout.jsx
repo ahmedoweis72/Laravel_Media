@@ -17,14 +17,14 @@ import { Button } from "@/Components/ui/button";
 import { Toaster, toast } from "sonner";
 import { cn } from "@/lib/utils";
 import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuLabel,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
 } from "@/Components/dropdown-menu";
-
+import { H1, H2, P, Small } from "@/Components/Typography";
 
 export default function DashboardLayout({ title, children }) {
     const { auth, flash } = usePage().props;
@@ -78,7 +78,7 @@ export default function DashboardLayout({ title, children }) {
 
                 {/* Sidebar panel */}
                 <div className="fixed inset-y-0 left-0 flex w-full max-w-xs flex-col bg-card">
-                    <div className="flex items-center justify-between px-4 py-2 border-b border-border">
+                    <div className="flex items-center justify-between px-4 py-2 dark-border">
                         <Link href="/" className="flex items-center">
                             <ApplicationLogo className="h-8 w-auto" />
                         </Link>
@@ -86,6 +86,7 @@ export default function DashboardLayout({ title, children }) {
                             variant="ghost"
                             size="icon"
                             onClick={() => setSidebarOpen(false)}
+                            className="dark-hover"
                         >
                             <X className="h-5 w-5" />
                             <span className="sr-only">Close sidebar</span>
@@ -99,10 +100,10 @@ export default function DashboardLayout({ title, children }) {
                                 key={item.name}
                                 href={item.href}
                                 className={cn(
-                                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium mb-1",
+                                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium mb-1 dark-hover",
                                     item.current
                                         ? "bg-primary text-primary-foreground"
-                                        : "text-foreground hover:bg-muted"
+                                        : "dark-text-secondary hover:bg-muted"
                                 )}
                             >
                                 <item.icon className="h-5 w-5 flex-shrink-0" />
@@ -114,9 +115,9 @@ export default function DashboardLayout({ title, children }) {
             </div>
 
             {/* Static sidebar for desktop */}
-            <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col border-r border-border">
+            <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col dark-border">
                 <div className="flex min-h-0 flex-1 flex-col bg-card">
-                    <div className="flex items-center justify-center h-16 border-b border-border">
+                    <div className="flex items-center justify-center h-16 dark-border">
                         <Link href="/" className="flex items-center">
                             <ApplicationLogo className="h-8 w-auto" />
                         </Link>
@@ -129,10 +130,10 @@ export default function DashboardLayout({ title, children }) {
                                 key={item.name}
                                 href={item.href}
                                 className={cn(
-                                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium mb-1",
+                                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium mb-1 dark-hover",
                                     item.current
                                         ? "bg-primary text-primary-foreground"
-                                        : "text-foreground hover:bg-muted"
+                                        : "dark-text-secondary hover:bg-muted"
                                 )}
                             >
                                 <item.icon className="h-5 w-5 flex-shrink-0" />
@@ -146,11 +147,11 @@ export default function DashboardLayout({ title, children }) {
             {/* Main content */}
             <div className="lg:pl-64">
                 {/* Top navigation bar */}
-                <header className="sticky top-0 z-10 flex h-16 items-center bg-card border-b border-border px-4 shadow-sm">
+                <header className="sticky top-0 z-10 flex h-16 items-center bg-card dark-border px-4 shadow-sm">
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="lg:hidden"
+                        className="lg:hidden dark-hover"
                         onClick={() => setSidebarOpen(true)}
                     >
                         <Menu className="h-6 w-6" />
@@ -158,7 +159,7 @@ export default function DashboardLayout({ title, children }) {
                     </Button>
 
                     <div className="flex flex-1 items-center justify-between">
-                        <h1 className="text-xl font-semibold">{title}</h1>
+                        <H1 className="text-xl font-semibold">{title}</H1>
 
                         <div className="flex items-center gap-3">
                             <ThemeToggle />
@@ -166,7 +167,7 @@ export default function DashboardLayout({ title, children }) {
                             {/* Notifications dropdown */}
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" size="icon">
+                                    <Button variant="ghost" size="icon" className="dark-hover">
                                         <Bell className="h-5 w-5" />
                                     </Button>
                                 </DropdownMenuTrigger>
@@ -174,13 +175,13 @@ export default function DashboardLayout({ title, children }) {
                                     align="end"
                                     className="w-64"
                                 >
-                                    <DropdownMenuLabel>
+                                    <DropdownMenuLabel className="dark-text-primary">
                                         Notifications
                                     </DropdownMenuLabel>
-                                    <DropdownMenuSeparator />
-                                    <div className="py-2 px-3 text-sm text-muted-foreground">
+                                    <DropdownMenuSeparator className="dark-border" />
+                                    <Small className="py-2 px-3">
                                         No new notifications
-                                    </div>
+                                    </Small>
                                 </DropdownMenuContent>
                             </DropdownMenu>
 
@@ -189,38 +190,31 @@ export default function DashboardLayout({ title, children }) {
                                 <DropdownMenuTrigger asChild>
                                     <Button
                                         variant="ghost"
-                                        className="flex items-center gap-2 relative"
+                                        className="flex items-center gap-2 relative dark-hover"
                                     >
-                                        <span className="hidden md:inline-block">
+                                        <P className="hidden md:inline-block">
                                             {user?.name}
-                                        </span>
+                                        </P>
                                         <ChevronDown className="h-4 w-4" />
                                     </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
-                                    <DropdownMenuLabel>
+                                    <DropdownMenuLabel className="dark-text-primary">
                                         My Account
                                     </DropdownMenuLabel>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem asChild>
-                                        <Link
-                                            href={route("profile.edit")}
-                                            className="cursor-pointer"
-                                        >
-                                            <User className="h-4 w-4 mr-2" />
-                                            Profile
-                                        </Link>
+                                    <DropdownMenuSeparator className="dark-border" />
+                                    <DropdownMenuItem className="dark-hover">
+                                        <User className="mr-2 h-4 w-4" />
+                                        <span>Profile</span>
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem asChild>
-                                        <Link
-                                            href={route("logout")}
-                                            method="post"
-                                            as="button"
-                                            className="w-full cursor-pointer"
-                                        >
-                                            <LogOut className="h-4 w-4 mr-2" />
-                                            Log Out
-                                        </Link>
+                                    <DropdownMenuItem className="dark-hover">
+                                        <Settings className="mr-2 h-4 w-4" />
+                                        <span>Settings</span>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuSeparator className="dark-border" />
+                                    <DropdownMenuItem className="dark-hover">
+                                        <LogOut className="mr-2 h-4 w-4" />
+                                        <span>Log out</span>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
@@ -228,7 +222,7 @@ export default function DashboardLayout({ title, children }) {
                     </div>
                 </header>
 
-                {/* Main content area */}
+                {/* Page content */}
                 <main className="py-6 px-4 sm:px-6 lg:px-8">{children}</main>
             </div>
         </div>
