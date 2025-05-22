@@ -17,7 +17,11 @@ class PlatformController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string',
-            'type' => 'required|string',
+            'type' => 'nullable|string',
+            'is_active' => 'boolean',
+            'api_key' => 'nullable|string',
+            'api_secret' => 'nullable|string',
+            'access_token' => 'nullable|string',
         ]);
 
         $platform = Platform::create($validated);
@@ -32,7 +36,16 @@ class PlatformController extends Controller
 
     public function update(Request $request, Platform $platform)
     {
-        $platform->update($request->all());
+        $validated = $request->validate([
+            'name' => 'required|string',
+            'type' => 'nullable|string',
+            'is_active' => 'boolean',
+            'api_key' => 'nullable|string',
+            'api_secret' => 'nullable|string',
+            'access_token' => 'nullable|string',
+        ]);
+        
+        $platform->update($validated);
 
         return response()->json($platform);
     }

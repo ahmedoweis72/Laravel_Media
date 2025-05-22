@@ -5,7 +5,14 @@ meta {
 }
 
 post {
-  url: http://127.0.0.1:8000/login
-  body: none
+  url: http://127.0.0.1:8000/api/login
+  body: json
   auth: inherit
+}
+
+body:json {
+  {
+    "email": "ahmedramadanmohamedoweis@gmail.com",
+    "password": "ahmedramadanmohamedoweis"
+  }
 }
