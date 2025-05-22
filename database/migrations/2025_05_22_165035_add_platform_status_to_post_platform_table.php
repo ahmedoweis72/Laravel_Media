@@ -12,7 +12,20 @@ return new class extends Migration
     public function up()
     {
         Schema::table('post_platform', function (Blueprint $table) {
-            $table->string('platform_status')->default('pending')->after('platform_id');
+            // Since a previous migration added a status column,
+            // rename that column first to avoid conflicts
+            if (Schema::hasColumn('post_platform', 'status')) {
+                $table->renameColumn('status', 'old_status');
+            }
+            
+            // Add platform_status column with all possible statuses
+            $table->enum('platform_status', [
+                'pending',      // Initial status
+                'scheduled',    // Scheduled for future publishing
+                'published',    // Successfully published
+                'failed',       // Failed to publish
+                'validation_failed' // Failed validation for platform requirements
+            ])->default('pending')->after('platform_id');
         });
     }
 
@@ -20,6 +33,11 @@ return new class extends Migration
     {
         Schema::table('post_platform', function (Blueprint $table) {
             $table->dropColumn('platform_status');
+            
+            // Restore original column if it existed
+            if (Schema::hasColumn('post_platform', 'old_status')) {
+                $table->renameColumn('old_status', 'status');
+            }
         });
     }
 };
