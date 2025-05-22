@@ -244,15 +244,15 @@ export default function Settings({ initialPlatforms = [] }) {
     const renderPlatformIcon = (type) => {
         switch (type?.toLowerCase()) {
             case "facebook":
-                return <Facebook className="h-5 w-5 text-blue-600" />;
+                return <Facebook className="h-5 w-5 text-blue-500 dark:text-blue-400" />;
             case "twitter":
-                return <Twitter className="h-5 w-5 text-blue-400" />;
+                return <Twitter className="h-5 w-5 text-blue-400 dark:text-blue-300" />;
             case "linkedin":
-                return <Linkedin className="h-5 w-5 text-blue-700" />;
+                return <Linkedin className="h-5 w-5 text-blue-700 dark:text-blue-400" />;
             case "instagram":
-                return <Instagram className="h-5 w-5 text-pink-600" />;
+                return <Instagram className="h-5 w-5 text-pink-600 dark:text-pink-400" />;
             default:
-                return <Globe className="h-5 w-5 text-gray-500" />;
+                return <Globe className="h-5 w-5 text-muted-foreground" />;
         }
     };
 
@@ -410,7 +410,7 @@ export default function Settings({ initialPlatforms = [] }) {
                                                         <h3 className="font-medium">{platform.name}</h3>
                                                         <p className="text-sm text-muted-foreground capitalize">
                                                             {platform.type}
-                                                            <span className={`ml-2 inline-block w-2 h-2 rounded-full ${platform.is_active ? "bg-green-500" : "bg-red-500"}`}></span>
+                                                            <span className={`ml-2 inline-block w-2 h-2 rounded-full ${platform.is_active ? "bg-green-500 dark:bg-green-400" : "bg-red-500 dark:bg-red-400"}`}></span>
                                                             <span className="ml-1 text-xs">{platform.is_active ? "Active" : "Inactive"}</span>
                                                         </p>
                                                     </div>

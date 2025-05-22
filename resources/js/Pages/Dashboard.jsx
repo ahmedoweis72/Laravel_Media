@@ -46,6 +46,7 @@ import {
 import { Skeleton } from "@/Components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import DashboardLayout from "@/Layouts/DashboardLayout";
+import { cn } from "@/lib/utils";
 
 export default function Dashboard({ initialPosts = [], platforms = [] }) {
   const { auth } = usePage().props;
@@ -177,10 +178,22 @@ export default function Dashboard({ initialPosts = [], platforms = [] }) {
   // Status badge component
   const StatusBadge = ({ status }) => {
     const statusConfig = {
-      draft: { icon: <Clock className="w-3 h-3 mr-1" />, className: "bg-yellow-100 text-yellow-800 border-yellow-200" },
-      scheduled: { icon: <CalendarIcon className="w-3 h-3 mr-1" />, className: "bg-blue-100 text-blue-800 border-blue-200" },
-      published: { icon: <CheckCircle className="w-3 h-3 mr-1" />, className: "bg-green-100 text-green-800 border-green-200" },
-      failed: { icon: <XCircle className="w-3 h-3 mr-1" />, className: "bg-red-100 text-red-800 border-red-200" }
+      draft: { 
+        icon: <Clock className="w-3 h-3 mr-1" />, 
+        className: "bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border-yellow-600/30" 
+      },
+      scheduled: { 
+        icon: <CalendarIcon className="w-3 h-3 mr-1" />, 
+        className: "bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-600/30" 
+      },
+      published: { 
+        icon: <CheckCircle className="w-3 h-3 mr-1" />, 
+        className: "bg-green-500/20 text-green-700 dark:text-green-400 border-green-600/30" 
+      },
+      failed: { 
+        icon: <XCircle className="w-3 h-3 mr-1" />, 
+        className: "bg-red-500/20 text-red-700 dark:text-red-400 border-red-600/30" 
+      }
     };
     
     const config = statusConfig[status] || statusConfig.draft;
@@ -244,12 +257,12 @@ export default function Dashboard({ initialPosts = [], platforms = [] }) {
           </Button>
         </div>
         
-        <div className="grid grid-cols-7 gap-px bg-gray-200 border border-gray-200 rounded-lg overflow-hidden">
+        <div className="grid grid-cols-7 gap-px bg-border border border-border rounded-lg overflow-hidden">
           {/* Day headers */}
           {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day, i) => (
             <div 
               key={day} 
-              className="p-2 text-center bg-gray-100 text-sm font-medium text-gray-600"
+              className="p-2 text-center bg-muted text-sm font-medium text-muted-foreground"
             >
               {day}
             </div>
@@ -264,17 +277,18 @@ export default function Dashboard({ initialPosts = [], platforms = [] }) {
             return (
               <div 
                 key={i}
-                className={`min-h-24 p-2 bg-white border-t border-l first:border-l-0 ${
-                  isCurrentDay ? "bg-blue-50" : ""
-                } ${
-                  isSelected ? "ring-2 ring-blue-500 ring-inset" : ""
-                }`}
+                className={cn(
+                  "min-h-24 p-2 bg-card border-t border-l first:border-l-0 cursor-pointer",
+                  isCurrentDay && "bg-primary/10",
+                  isSelected && "ring-2 ring-primary ring-inset"
+                )}
                 onClick={() => setSelectedDate(day)}
               >
                 <div className="flex justify-between">
-                  <span className={`text-sm font-medium ${
-                    isCurrentDay ? "text-blue-600" : ""
-                  }`}>
+                  <span className={cn(
+                    "text-sm font-medium",
+                    isCurrentDay && "text-primary"
+                  )}>
                     {format(day, "d")}
                   </span>
                   
@@ -289,7 +303,7 @@ export default function Dashboard({ initialPosts = [], platforms = [] }) {
                   {dayPosts.slice(0, 3).map(post => (
                     <div 
                       key={post.id}
-                      className="text-xs p-1 rounded bg-gray-50 truncate cursor-pointer hover:bg-gray-100"
+                      className="text-xs p-1 rounded bg-muted/50 truncate cursor-pointer hover:bg-muted"
                       onClick={(e) => {
                         e.stopPropagation();
                         Inertia.get(route("posts.show", post.id));
@@ -300,7 +314,7 @@ export default function Dashboard({ initialPosts = [], platforms = [] }) {
                   ))}
                   
                   {dayPosts.length > 3 && (
-                    <div className="text-xs text-gray-500 italic">
+                    <div className="text-xs text-muted-foreground italic">
                       +{dayPosts.length - 3} more
                     </div>
                   )}
@@ -326,7 +340,7 @@ export default function Dashboard({ initialPosts = [], platforms = [] }) {
                     </div>
                   </CardHeader>
                   <CardContent className="py-2">
-                    <p className="text-sm text-gray-600 line-clamp-2">{post.content}</p>
+                    <p className="text-sm text-muted-foreground line-clamp-2">{post.content}</p>
                     <div className="flex flex-wrap gap-1 mt-2">
                       {post.platforms.map(platform => (
                         <Badge key={platform.id} variant="outline" className="text-xs">
@@ -427,7 +441,7 @@ export default function Dashboard({ initialPosts = [], platforms = [] }) {
           </div>
         ) : filteredPosts.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-500">No posts match your filters</p>
+            <p className="text-muted-foreground">No posts match your filters</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -453,7 +467,7 @@ export default function Dashboard({ initialPosts = [], platforms = [] }) {
                   </div>
                 </CardHeader>
                 <CardContent className="py-2">
-                  <p className="text-sm text-gray-600 line-clamp-3">{post.content}</p>
+                  <p className="text-sm text-muted-foreground line-clamp-3">{post.content}</p>
                   <div className="flex flex-wrap gap-1 mt-3">
                     {post.platforms.map(platform => (
                       <Badge key={platform.id} variant="outline">

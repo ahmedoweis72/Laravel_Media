@@ -24,14 +24,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('platforms', PlatformController::class);
     
     // Post routes
-    Route::apiResource('posts', PostController::class); 
-    Route::get('/posts/filter/status/{status}', [PostController::class, 'filterByStatus']);
-    Route::get('/posts/filter/date/{date}', [PostController::class, 'filterByDate']);
+    Route::middleware('auth:sanctum')->apiResource('posts', PostController::class); 
+    Route::middleware('auth:sanctum')->get('/posts/filter/status/{status}', [PostController::class, 'filterByStatus']);
+    Route::middleware('auth:sanctum')->get('/posts/filter/date/{date}', [PostController::class, 'filterByDate']);
     
     // Post-Platform routes
-    Route::apiResource('post-platforms', PostPlatformController::class);
+    Route::middleware('auth:sanctum')->apiResource('post-platforms', PostPlatformController::class);
     
     // User-Platform routes
-    Route::get('/user/platforms', [UserPlatformController::class, 'index']);
-    Route::post('/user/platforms/{platform}/toggle', [UserPlatformController::class, 'toggle']);
+    Route::middleware('auth:sanctum')->get('/user/platforms', [UserPlatformController::class, 'index']);
+    Route::middleware('auth:sanctum')->post('/user/platforms/{platform}/toggle', [UserPlatformController::class, 'toggle']);
 });
