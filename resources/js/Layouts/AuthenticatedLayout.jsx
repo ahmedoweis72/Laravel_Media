@@ -26,14 +26,14 @@ const user = auth?.user;
     return (
         <>
             <Toaster position="top-right" />
-            <div className="min-h-screen bg-background text-foreground">
+            <div className="min-h-screen bg-background text-foreground text-white">
                 <nav className="border-b border-border bg-card">
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                         <div className="flex h-16 justify-between">
                             <div className="flex">
                                 <div className="flex shrink-0 items-center">
                                     <Link href="/">
-                                        <ApplicationLogo className="block h-9 w-auto fill-current text-foreground" />
+                                        <ApplicationLogo className="block h-9 w-auto fill-current text-foreground dark:text-white" />
                                     </Link>
                                 </div>
 
@@ -43,26 +43,28 @@ const user = auth?.user;
                                         <NavLink
                                             href={route("newFeed")}
                                             active={route().current("newFeed")}
+                                            className="text-foreground hover:text-foreground/80 dark:text-white"
                                         >
                                             New Feed
                                         </NavLink>
                                         <NavLink
                                             href={route("dashboard")}
                                             active={route().current("dashboard")}
+                                            className="text-foreground hover:text-foreground/80 dark:text-white"
                                         >
                                             Dashboard
                                         </NavLink>
                                         <NavLink
                                             href={route("posts.create")}
-                                            active={route().current(
-                                                "posts.create"
-                                            )}
+                                            active={route().current("posts.create")}
+                                            className="text-foreground hover:text-foreground/80 dark:text-white"
                                         >
                                             Create Post
                                         </NavLink>
                                         <NavLink
                                             href={route("settings")}
                                             active={route().current("settings")}
+                                            className="text-foreground hover:text-foreground/80 dark:text-white"
                                         >
                                             Settings
                                         </NavLink>
@@ -80,7 +82,7 @@ const user = auth?.user;
                                                 <span className="inline-flex rounded-md">
                                                     <button
                                                         type="button"
-                                                        className="inline-flex items-center rounded-md border border-transparent bg-muted/50 px-3 py-2 text-sm font-medium leading-4 text-foreground transition duration-150 ease-in-out hover:bg-muted focus:outline-none"
+                                                        className="inline-flex items-center rounded-md border border-transparent bg-muted/50 px-3 py-2 text-sm font-medium leading-4 text-foreground transition duration-150 ease-in-out hover:bg-muted hover:text-foreground focus:outline-none"
                                                     >
                                                         {user.name}
 
@@ -100,9 +102,10 @@ const user = auth?.user;
                                                 </span>
                                             </Dropdown.Trigger>
 
-                                            <Dropdown.Content>
+                                            <Dropdown.Content className="bg-card text-foreground">
                                                 <Dropdown.Link
                                                     href={route("profile.edit")}
+                                                    className="text-foreground hover:text-foreground/80"
                                                 >
                                                     Profile
                                                 </Dropdown.Link>
@@ -110,6 +113,7 @@ const user = auth?.user;
                                                     href={route("logout")}
                                                     method="post"
                                                     as="button"
+                                                    className="text-foreground hover:text-foreground/80 "
                                                 >
                                                     Log Out
                                                 </Dropdown.Link>
@@ -123,13 +127,13 @@ const user = auth?.user;
                                     <ThemeToggle />
                                     <Link
                                         href={route("login")}
-                                        className="text-sm text-foreground hover:text-foreground/80"
+                                        className="text-sm text-foreground hover:text-foreground/80 dark:text-white"
                                     >
                                         Log In
                                     </Link>
                                     <Link
                                         href={route("register")}
-                                        className="text-sm text-foreground hover:text-foreground/80"
+                                        className="text-sm text-foreground hover:text-foreground/80 dark:text-white"
                                     >
                                         Register
                                     </Link>
@@ -185,7 +189,7 @@ const user = auth?.user;
                     <div
                         className={
                             (showingNavigationDropdown ? "block" : "hidden") +
-                            " sm:hidden"
+                            " sm:hidden bg-card"
                         }
                     >
                         <div className="space-y-1 pb-3 pt-2">
@@ -194,34 +198,44 @@ const user = auth?.user;
                                     <ResponsiveNavLink
                                         href={route("newFeed")}
                                         active={route().current("newFeed")}
+                                        className="text-foreground hover:text-foreground/80"
                                     >
                                         New Feed
                                     </ResponsiveNavLink>
                                     <ResponsiveNavLink
                                         href={route("dashboard")}
                                         active={route().current("dashboard")}
+                                        className="text-foreground hover:text-foreground/80"
                                     >
                                         Dashboard
                                     </ResponsiveNavLink>
                                     <ResponsiveNavLink
                                         href={route("posts.create")}
                                         active={route().current("posts.create")}
+                                        className="text-foreground hover:text-foreground/80"
                                     >
                                         Create Post
                                     </ResponsiveNavLink>
                                     <ResponsiveNavLink
                                         href={route("settings")}
                                         active={route().current("settings")}
+                                        className="text-foreground hover:text-foreground/80"
                                     >
                                         Settings
                                     </ResponsiveNavLink>
                                 </>
                             ) : (
                                 <>
-                                    <ResponsiveNavLink href={route("login")}>
+                                    <ResponsiveNavLink 
+                                        href={route("login")}
+                                        className="text-foreground hover:text-foreground/80"
+                                    >
                                         Log In
                                     </ResponsiveNavLink>
-                                    <ResponsiveNavLink href={route("register")}>
+                                    <ResponsiveNavLink 
+                                        href={route("register")}
+                                        className="text-foreground hover:text-foreground/80"
+                                    >
                                         Register
                                     </ResponsiveNavLink>
                                 </>
@@ -242,13 +256,14 @@ const user = auth?.user;
                                 <div className="mt-3 space-y-1">
                                     <ResponsiveNavLink
                                         href={route("profile.edit")}
+                                        className="text-foreground hover:text-foreground/80"
                                     >
                                         Profile
                                     </ResponsiveNavLink>
                                     <ResponsiveNavLink
                                         method="post"
                                         href={route("logout")}
-                                        as="button"
+                                        className="text-foreground hover:text-foreground/80"
                                     >
                                         Log Out
                                     </ResponsiveNavLink>
@@ -266,7 +281,11 @@ const user = auth?.user;
                     </header>
                 )}
 
-                <main className="py-12">{children}</main>
+                <main className="py-12">
+                    <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+                        {children}
+                    </div>
+                </main>
             </div>
         </>
     );
