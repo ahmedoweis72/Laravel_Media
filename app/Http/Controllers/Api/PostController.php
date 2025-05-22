@@ -15,14 +15,12 @@ class PostController extends Controller
         return Post::with(['user', 'platforms'])->get();
     }
 
-  
-public function create()
-    {
-        $platforms = Platform::all();
 
-        return Inertia::render('Posts/Create', [
-            'platforms' => $platforms,
-        ]);
+    public function create()
+    {
+       return $platforms = Platform::all();
+
+        
     }
 
     public function store(Request $request)

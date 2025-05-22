@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import Home from "./Home";
 import Posts from "./Posts";
 
-export default function NewFeed() {
+export default function NewFeed({posts}) {
     return (
         <AuthenticatedLayout
 
@@ -19,7 +19,7 @@ export default function NewFeed() {
             <Head title="New-Feed" />
 
             <div className="py-12">
-                <Posts />
+                <Posts posts={posts}/>
             </div>
         </AuthenticatedLayout>
     );

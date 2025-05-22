@@ -15,7 +15,7 @@ return new class extends Migration
         $table->id();
         $table->foreignId('post_id')->constrained()->onDelete('cascade');
         $table->foreignId('platform_id')->constrained()->onDelete('cascade');
-        $table->string('platform_status')->default('pending'); // optional status
+        $table->enum('status', ['draft', 'scheduled', 'published'])->default('draft'); // optional status
         $table->timestamps();
     });
     }

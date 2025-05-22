@@ -22,7 +22,7 @@ export default function Login({ status, canResetPassword }) {
     };
 
     return (
-        <GuestLayout>
+        <GuestLayout >
             <Head title="Log in" />
 
             {status && (
@@ -30,8 +30,8 @@ export default function Login({ status, canResetPassword }) {
                     {status}
                 </div>
             )}
-
-            <form onSubmit={submit}>
+            <div className="mt-6 w-full overflow-hidden bg-white px-6 py-4 shadow-md sm:max-w-md sm:rounded-lg">
+            <form onSubmit={submit} >
                 <div>
                     <InputLabel htmlFor="email" value="Email" />
 
@@ -96,7 +96,7 @@ export default function Login({ status, canResetPassword }) {
                         Log in
                     </PrimaryButton>
                 </div>
-            </form>
+            </form></div>
         </GuestLayout>
     );
 }

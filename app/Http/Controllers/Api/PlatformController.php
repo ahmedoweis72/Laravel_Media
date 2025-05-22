@@ -10,6 +10,7 @@ class PlatformController extends Controller
 {
     public function index()
     {
+        dd(Platform::all());
         return Platform::all();
     }
 
