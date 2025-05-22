@@ -18,7 +18,6 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout']);
     
     // Platform routes
     Route::apiResource('platforms', PlatformController::class);

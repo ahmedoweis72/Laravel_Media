@@ -10,6 +10,8 @@ import {
     LogOut,
     User,
     Bell,
+    Camera,
+    MessageCircle,
 } from "lucide-react";
 import ApplicationLogo from "@/Components/ApplicationLogo";
 import { ThemeToggle } from "@/Components/ThemeToggle";
@@ -51,6 +53,12 @@ export default function DashboardLayout({ title, children }) {
             href: route("posts.create"),
             icon: PlusCircle,
             current: route().current("posts.create"),
+        },
+        {
+            name: "New Feed",
+            href: route("newFeed"),
+            icon: MessageCircle,
+            current: route().current("newFeed"),
         },
         {
             name: "Settings",
@@ -167,7 +175,11 @@ export default function DashboardLayout({ title, children }) {
                             {/* Notifications dropdown */}
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" size="icon" className="dark-hover">
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="dark-hover"
+                                    >
                                         <Bell className="h-5 w-5" />
                                     </Button>
                                 </DropdownMenuTrigger>
@@ -182,40 +194,6 @@ export default function DashboardLayout({ title, children }) {
                                     <Small className="py-2 px-3">
                                         No new notifications
                                     </Small>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-
-                            {/* User dropdown */}
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button
-                                        variant="ghost"
-                                        className="flex items-center gap-2 relative dark-hover"
-                                    >
-                                        <P className="hidden md:inline-block">
-                                            {user?.name}
-                                        </P>
-                                        <ChevronDown className="h-4 w-4" />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                    <DropdownMenuLabel className="dark-text-primary">
-                                        My Account
-                                    </DropdownMenuLabel>
-                                    <DropdownMenuSeparator className="dark-border" />
-                                    <DropdownMenuItem className="dark-hover">
-                                        <User className="mr-2 h-4 w-4" />
-                                        <span>Profile</span>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem className="dark-hover">
-                                        <Settings className="mr-2 h-4 w-4" />
-                                        <span>Settings</span>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuSeparator className="dark-border" />
-                                    <DropdownMenuItem className="dark-hover">
-                                        <LogOut className="mr-2 h-4 w-4" />
-                                        <span>Log out</span>
-                                    </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </div>
