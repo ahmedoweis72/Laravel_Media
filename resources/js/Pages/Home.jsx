@@ -7,7 +7,7 @@ export default function Home({ posts, authUser }) {
     return authUser ? (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight light:text-gray-800">
+                <h2 className="text-xl font-semibold leading-tight dark:text-gray-50 text-gray-800">
                     Home
                 </h2>
             }

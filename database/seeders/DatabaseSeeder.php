@@ -52,6 +52,7 @@ class DatabaseSeeder extends Seeder
 
     $this->call([
         PostPlatformSeeder::class,
+        PostSeeder::class,
     ]);
 }
 

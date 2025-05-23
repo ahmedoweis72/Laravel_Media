@@ -32,6 +32,7 @@ class PostWebController extends Controller
             'platform_ids' => 'required|array',
             'platform_ids.*' => 'exists:platforms,id',
             'scheduled_at' => 'nullable|date|after:now',
+            'image_url' => 'nullable|string',
         ]);
 
         $post = Post::create([
@@ -39,12 +40,13 @@ class PostWebController extends Controller
             'content' => $validated['content'],
             'status' => $validated['status'],
             'scheduled_at' => $validated['status'] === 'scheduled' ? $request->input('scheduled_at') : null,
+            'image_url' => $request->input('image_url'),
             'user_id' => auth()->id(),
         ]);
 
         $platformData = [];
         foreach ($validated['platform_ids'] as $platformId) {
-            $platformData[$platformId] = ['platform_status' => $validated['status']];
+            $platformData[$platformId] = ['platform_status' => 'pending'];
         }
         $post->platforms()->attach($platformData);
 
@@ -64,10 +66,11 @@ class PostWebController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'status' => 'required|in:draft,published,scheduled', // ✅ Allow 'scheduled'
+            'status' => 'required|in:draft,published,scheduled',
             'platform_ids' => 'required|array',
             'platform_ids.*' => 'exists:platforms,id',
             'scheduled_at' => 'nullable|date|after:now',
+            'image_url' => 'nullable|string',
         ]);
 
         $post->update([
@@ -75,6 +78,7 @@ class PostWebController extends Controller
             'content' => $validated['content'],
             'status' => $validated['status'],
             'scheduled_at' => $validated['status'] === 'scheduled' ? $request->input('scheduled_at') : null,
+            'image_url' => $request->input('image_url'),
         ]);
 
         $platformData = [];
@@ -82,7 +86,6 @@ class PostWebController extends Controller
             $platformData[$platformId] = ['platform_status' => $validated['status']];
         }
         $post->platforms()->sync($platformData);
-
 
         return redirect()->route('newFeed')->with('success', 'Post updated.');
     }

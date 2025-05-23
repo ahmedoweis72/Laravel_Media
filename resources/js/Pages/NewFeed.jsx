@@ -10,7 +10,7 @@ export default function NewFeed({posts}) {
         <AuthenticatedLayout
 
             header={
-                <h2 className="text-xl font-semibold leading-tight light:text-gray-800">
+                <h2 className="text-xl font-semibold leading-tight dark:text-gray-50 text-gray-800">
                     New Feed
                 </h2>
             }
